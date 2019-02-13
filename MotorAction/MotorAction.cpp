@@ -48,7 +48,6 @@ void MotorAction::compute(const cedar::proc::Arguments&)
   auto ready_peak = boost::dynamic_pointer_cast<cedar::aux::ConstMatData>(this->getInput("ready"));
   exploration = cedar::aux::math::getMatrixEntry<double>(exp->getData(), 0, 0);
   ready = cedar::aux::math::getMatrixEntry<double>(ready_peak->getData(), 0, 0);
-  std::cout << "ready : " << ready << '\n';
 
   if (exploration < 0.8)
   {
@@ -56,15 +55,12 @@ void MotorAction::compute(const cedar::proc::Arguments&)
      {
         mGaussMatrixCenters.clear();
         next_action = double(rand()) / (double(RAND_MAX) + 1.0)*100;
-        std::cout << "next action " << next_action <<'\n';
         mGaussMatrixCenters.push_back(next_action);
         dat = 2.0;
         lock_action = 0;
      }
      if(ready < 0.8)
      {
-       std::cout << "not ready " << '\n';
-       dat = 0;
        lock_action = 1;
      }
   }
@@ -79,12 +75,6 @@ void MotorAction::reCompute()
    mGaussMatrixSizes.push_back(static_cast<int>(this->mSize->getValue()));
    mGaussMatrixSigmas.push_back(static_cast<double>(this->mSigma->getValue()));
    dat = static_cast<int>(this->mAmplitude->getValue());
-}
-
-
-void MotorAction::reName()
-{
-
 }
 
 void MotorAction::reset()
