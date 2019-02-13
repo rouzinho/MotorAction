@@ -46,10 +46,10 @@ void MotorAction::compute(const cedar::proc::Arguments&)
 
   auto exp = boost::dynamic_pointer_cast<cedar::aux::ConstMatData>(this->getInput("explore"));
   auto ready_peak = boost::dynamic_pointer_cast<cedar::aux::ConstMatData>(this->getInput("ready"));
-  exploration = cedar::aux::math::getMatrixEntry<double>(exp->getData(), 0, 0);
+  exploitation = cedar::aux::math::getMatrixEntry<double>(exp->getData(), 0, 0);
   ready = cedar::aux::math::getMatrixEntry<double>(ready_peak->getData(), 0, 0);
 
-  if (exploration < 0.8)
+  if (exploitation < 0.8)
   {
      if(ready > 0.8 && lock_action == 1)
      {

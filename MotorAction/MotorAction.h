@@ -104,7 +104,7 @@ private:
 
   double sigma;
   double center;
-  double exploration;
+  double exploitation;
   double ready;
   double next_action;
   double lower_bound;
