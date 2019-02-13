@@ -100,6 +100,8 @@ private:
   cedar::aux::DoubleParameterPtr mAmplitude;
   cedar::aux::DoubleParameterPtr mSigma;
   cedar::aux::DoubleParameterPtr mCenter;
+  cedar::aux::DoubleParameterPtr mLower;
+  cedar::aux::DoubleParameterPtr mUpper;
 
 
   double sigma;

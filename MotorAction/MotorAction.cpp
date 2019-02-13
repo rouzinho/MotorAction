@@ -18,7 +18,9 @@ cedar::proc::Step(true),
 mOutput(new cedar::aux::MatData(cv::Mat::zeros(1, 100, CV_32F))),
 mSize(new cedar::aux::IntParameter(this, "Size",100)),
 mAmplitude(new cedar::aux::DoubleParameter(this,"Amplitude",2.0)),
-mSigma(new cedar::aux::DoubleParameter(this,"Sigma",3.0))
+mSigma(new cedar::aux::DoubleParameter(this,"Sigma",3.0)),
+mLower(new cedar::aux::DoubleParameter(this,"lower",0)),
+mUpper(new cedar::aux::DoubleParameter(this,"upper",100.0))
 {
 this->declareOutput("output", mOutput);
 this->declareInput("ready",true);
@@ -36,6 +38,8 @@ dat = 0;
 this->connect(this->mSize.get(), SIGNAL(valueChanged()), this, SLOT(reCompute()));
 this->connect(this->mSigma.get(), SIGNAL(valueChanged()), this, SLOT(reCompute()));
 this->connect(this->mAmplitude.get(), SIGNAL(valueChanged()), this, SLOT(reCompute()));
+this->connect(this->mLower.get(), SIGNAL(valueChanged()), this, SLOT(reCompute()));
+this->connect(this->mUpper.get(), SIGNAL(valueChanged()), this, SLOT(reCompute()));
 
 }
 //----------------------------------------------------------------------------------------------------------------------
@@ -54,7 +58,7 @@ void MotorAction::compute(const cedar::proc::Arguments&)
      if(ready > 0.8 && lock_action == 1)
      {
         mGaussMatrixCenters.clear();
-        next_action = double(rand()) / (double(RAND_MAX) + 1.0)*100;
+        next_action = double(rand()) / (double(RAND_MAX) + 1.0)*upper_bound;
         mGaussMatrixCenters.push_back(next_action);
         dat = 2.0;
         lock_action = 0;
@@ -75,6 +79,8 @@ void MotorAction::reCompute()
    mGaussMatrixSizes.push_back(static_cast<int>(this->mSize->getValue()));
    mGaussMatrixSigmas.push_back(static_cast<double>(this->mSigma->getValue()));
    dat = static_cast<int>(this->mAmplitude->getValue());
+   lower_bound = static_cast<double>(this->mLower->getValue());
+   upper_bound = static_cast<double>(this->mUpper->getValue());
 }
 
 void MotorAction::reset()
