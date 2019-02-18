@@ -83,6 +83,8 @@ private:
   // The arguments are unused here
   void compute(const cedar::proc::Arguments&);
 
+  void chooseNextAction();
+
   void reset();
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -113,7 +115,9 @@ private:
   double upper_bound;
   int size;
   double dat;
-  int lock_action;
+  int time;
+  bool lock_action;
+  bool first;
 
   //--------------------------------------------------------------------------------------------------------------------
   // parameters

@@ -29,9 +29,11 @@ srand(static_cast<unsigned int>(clock()));
 mGaussMatrixSizes.push_back(100);
 mGaussMatrixSigmas.push_back(3.0);
 mGaussMatrixCenters.push_back(25.0);
-lock_action = 1;
+lock_action = false;
 lower_bound = 0;
 upper_bound = 100;
+first = true;
+time = 0;;
 //init the variable that will get the sensor value
 dat = 0;
 
@@ -55,29 +57,45 @@ void MotorAction::compute(const cedar::proc::Arguments&)
 
   if (exploitation < 0.8)
   {
-     if(ready > 0.8 && lock_action == 1)
+     if(first == true)
      {
-        mGaussMatrixCenters.clear();
-        next_action = double(rand()) / (double(RAND_MAX) + 1.0)*upper_bound;
-        if(next_action < 10.00)
-        {
-           next_action = 10.00;
-        }
-        if (next_action > (upper_bound - 10.00))
-        {
-           next_action = upper_bound - 10.00;
-        }
-        mGaussMatrixCenters.push_back(next_action);
-        dat = 2.0;
-        lock_action = 0;
+        this->chooseNextAction();
+        lock_action = true;
+        first = false;
      }
-     if(ready < 0.8)
+     if(ready > 0.8 && lock_action == false)
      {
-       lock_action = 1;
+       this->chooseNextAction();
+       lock_action = true;
      }
-  }
-  this->mOutput->setData(cedar::aux::math::gaussMatrix(1,mGaussMatrixSizes,dat,mGaussMatrixSigmas,mGaussMatrixCenters,true));
+     if (ready < 0.8)
+     {
+        lock_action = false;
+        time = 0;
+     }
+     if(ready > 0.8 && lock_action == true)
+     {
+        time++;
+     }
 
+  }
+  std::cout << "time : " << time << '\n';
+  this->mOutput->setData(cedar::aux::math::gaussMatrix(1,mGaussMatrixSizes,dat,mGaussMatrixSigmas,mGaussMatrixCenters,true));
+}
+
+void MotorAction::chooseNextAction()
+{
+   next_action = double(rand()) / (double(RAND_MAX) + 1.0)*upper_bound;
+   if(next_action < 10.00)
+   {
+      next_action = 10.00;
+   }
+   if (next_action > (upper_bound - 10.00))
+   {
+      next_action = upper_bound - 10.00;
+   }
+   mGaussMatrixCenters.clear();
+   mGaussMatrixCenters.push_back(next_action);
 }
 
 void MotorAction::reCompute()
